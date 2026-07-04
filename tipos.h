@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct {
     int dia, mes, anio;
@@ -32,16 +33,5 @@ typedef struct {
     char estado;
     t_fecha fechaBaja;
 } t_socio;
-
-typedef struct{
-    void *clave;
-    unsigned nro_reg;
-}t_reg_indice;
-
-typedef struct {
-    t_arbol arbol;
-    size_t tam_clave;
-    int (*cmp)(const void*, const void*);
-} t_indice;
 
 #endif // TIPOS_H_INCLUDED

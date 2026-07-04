@@ -1,5 +1,9 @@
 #include "indice.h"
 
+static void grabar_nodo_long(const void *info, const void *param);
+static void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato);
+static void vaciar_arbol_indice(t_arbol *pa);
+
 void ind_crear(t_indice* ind, size_t tam_clave, int (*cmp)(const void*, const void*))
 {
     crearArbol(&(ind->arbol));
@@ -75,7 +79,7 @@ int ind_recorrer(const t_indice* ind, void(*accion)(const void*, const void*), v
 
 
 // recibe info desglosa y escribe,es la accion q tendra el recorrer
-void grabar_nodo_long(const void *info, const void *param)
+static void grabar_nodo_long(const void *info, const void *param)
 {
     // info es el nodo, param el puntero al arch
     t_reg_indice *reg = (t_reg_indice *)info;
@@ -99,7 +103,7 @@ int ind_grabar(const t_indice* ind, const char* path)
 }
 
 
-void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato)
+static void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato)
 {
     if (inicio > fin)
         return;
@@ -147,7 +151,7 @@ int ind_cargar(t_indice* ind, const char* path)
     return 1;
 }
 
-void vaciar_arbol_indice(t_arbol *pa)
+static void vaciar_arbol_indice(t_arbol *pa)
 {
     if (!*pa) return;
 

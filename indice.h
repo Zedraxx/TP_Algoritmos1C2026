@@ -7,16 +7,24 @@
 #define CLAVE_NO_ENCONTRADA 0
 #define CLAVE_ENCONTRADA 1
 
+typedef struct{
+    void *clave;
+    unsigned nro_reg;
+}t_reg_indice;
+
+typedef struct {
+    t_arbol arbol;
+    size_t tam_clave;
+    int (*cmp)(const void*, const void*);
+} t_indice;
 
 void ind_crear(t_indice* ind, size_t tam_clave, int (*cmp)(const void*, const void*));
 int ind_insertar(t_indice* ind, void *clave, unsigned nro_reg);
 int ind_eliminar(t_indice* ind, void *clave, unsigned *nro_reg);
 int ind_buscar(const t_indice* ind, void *clave, unsigned *nro_reg);
-void grabar_nodo_long(const void *info, const void *param);
-int ind_grabar(const t_indice* ind, const char* path);
-void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato);
 int ind_cargar(t_indice* ind, const char* path);
-void vaciar_arbol_indice(t_arbol *pa);
+int ind_grabar(const t_indice* ind, const char* path);
 void ind_vaciar(t_indice* ind);
+int ind_recorrer(const t_indice* ind, void(*accion)(const void*, const void*), void *param);
 
 #endif // INDICE_H_INCLUDED
