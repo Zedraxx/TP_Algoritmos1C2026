@@ -7,52 +7,38 @@
 #define ARCHIVO_DATOS "socios.dat"
 #define ARCHIVO_INDICE "socios.idx"
 
-// Primer aplicación: Generar el índice
-/*
 int main(int argc, char *argv[])
 {
     t_indice ind;
-    char* path;
-
-    if(!argv[1]){
-        printf("Falta agregar el Path en Program Arguments\n");
-        return 1;
-    }
-
-    path = strcat(argv[1],ARCHIVO_ENTRADA);
-
-    parsearCsvABinario(path);
-
-    ind_crear(&ind,sizeof(long),compararDniIndice);
-
-    generarIndiceDesdeDat(ARCHIVO_DATOS,&ind);
-
-    ind_grabar(&ind,ARCHIVO_INDICE);
-
-    ind_cargar(&ind, ARCHIVO_INDICE);
-
-    printf("\nContenido del Indice\n");
-    ind_recorrer(&ind,imprimirIndice,NULL);
-
-    ind_vaciar(&ind);
-
-    return 0;
-}
-*/
-
-
-//Segunda aplicación: Gestión de Socios
-
-int main()
-{
-    t_indice ind;
+    char path_csv[512];//Buffer para el path
     char opcion;
 
     ind_crear(&ind, sizeof(long), compararDniIndice);
 
-    // Intentamos cargar el índice; si no existe, se arranca con el índice vacío
-    if (!ind_cargar(&ind, ARCHIVO_INDICE)) {
-        printf("No se encontro un archivo de indices previo. Se creara uno nuevo al salir.\n");
+    // validamos si ya existe un indice, si existe es pq no es la primera ejecucion del programa y cargamos lo que se tenia previamente para no sobreescribir los cambios previos
+    FILE* test_idx = fopen(ARCHIVO_INDICE, "rb");
+
+    if (test_idx != NULL) {//Si el puntero no es null, entonces el .idx ya existe
+        fclose(test_idx);
+        printf("Se detecto un indice previo. Cargando...\n");
+        ind_cargar(&ind, ARCHIVO_INDICE);
+    } else {//sino es xq es la primera ejecucion del programa
+
+        // validamos q hayan pasado el path
+        if (argc < 2) {
+            printf("Error: Falta agregar el Path en los argumentos\n");
+            return 1;
+        }
+
+        // Armamos el path, snprintf permite escribir texto con formato directamente dentro de un buffer.
+        // Es una version segura de sprintf, ya que evita el desbordamiento de memoria al limitar el num max de caracteres
+        snprintf(path_csv, sizeof(path_csv), "%s%s", argv[1], ARCHIVO_ENTRADA);
+
+        printf("Primera ejecucion. Procesando archivo historico: %s\n", path_csv);
+
+        //generamos archivos
+        parsearCsvABinario(path_csv);
+        generarIndiceDesdeDat(ARCHIVO_DATOS, &ind);
     }
 
     do {
@@ -63,39 +49,45 @@ int main()
         printf("(L) Listar Socios Ordenados por DNI\n");
         printf("(C) Compactar y Reindexar Archivos\n");
         printf("(S) Salir\n");
-        printf("Seleccione una opcion: ");
+        printf("\nSeleccione una opcion: ");
 
-        fflush(stdin);
         scanf(" %c", &opcion);
-        opcion = toUpper(opcion);
+        opcion = toupper(opcion);
 
         switch(opcion) {
             case 'A':
+                system("cls");
                 menuAltaSocio(&ind, ARCHIVO_DATOS);
                 break;
             case 'M':
+                system("cls");
                 menuModificarSocio(&ind, ARCHIVO_DATOS);
                 break;
             case 'B':
+                system("cls");
                 menuBajaSocio(&ind, ARCHIVO_DATOS);
                 break;
             case 'L':
+                system("cls");
                 menuListarSocios(&ind, ARCHIVO_DATOS);
                 break;
             case 'C':
+                system("cls");
                 menuCompactarYReindexar(&ind, ARCHIVO_DATOS, ARCHIVO_INDICE);
                 break;
             case 'S':
-                printf("Guardando cambios y saliendo...\n");
+                system("cls");
+                printf("\nGuardando cambios y liberando memoria...\n");
                 break;
             default:
-                printf("Opcion invalida. Intente de nuevo.\n");
+                system("cls");
+                printf("\nOpcion invalida. Intente de nuevo.\n");
         }
     } while (opcion != 'S');
 
+    // cuando sale grabamos el indice al .idx y liberamos la memoria del indice.
     ind_grabar(&ind, ARCHIVO_INDICE);
     ind_vaciar(&ind);
 
     return 0;
 }
-

@@ -191,7 +191,7 @@ void menuAltaSocio(t_indice *ind, const char *path_dat) {
     t_fecha fProceso = obtenerFechaActual();
 
     printf("\n--- ALTA DE NUEVO SOCIO ---\n");
-    printf("Ingrese DNI: ");
+    printf("\nIngrese DNI: ");
     scanf("%ld", &dni_ingresado);
 
     if (validarDni(dni_ingresado, LIMINF, LIMSUP) != 0) {
@@ -217,25 +217,25 @@ void menuAltaSocio(t_indice *ind, const char *path_dat) {
     }
 
     nuevo_socio.dni = dni_ingresado;
-    printf("Ingrese Apellido: ");
+    printf("\nIngrese Apellido: ");
     fflush(stdin);
     scanf(" %[^\n]", nuevo_socio.ape);
 
-    printf("Ingrese Nombre: ");
+    printf("\nIngrese Nombre: ");
     fflush(stdin);
     scanf(" %[^\n]", nuevo_socio.nom);
 
-    printf("Fecha de Nacimiento:\n");
+    printf("\nFecha de Nacimiento:\n");
     ingresarFecha(&nuevo_socio.fechaNac);
 
-    printf("Ingrese Sexo (M/F/O): ");
+    printf("\nIngrese Sexo (M/F/O): ");
     fflush(stdin);
     scanf(" %c", &nuevo_socio.sexo);
 
-    printf("Fecha de Afiliacion:\n");
+    printf("\nFecha de Afiliacion:\n");
     ingresarFecha(&nuevo_socio.fechaAf);
 
-    printf("Ingrese Categoria (MENOR/CADETE/ADULTO/VITALICIO/HONORARIO/JUBILADO): ");
+    printf("\nIngrese Categoria (MENOR/CADETE/ADULTO/VITALICIO/HONORARIO/JUBILADO): ");
     fflush(stdin);
     scanf(" %[^\n]", nuevo_socio.categoria);
 
@@ -243,7 +243,7 @@ void menuAltaSocio(t_indice *ind, const char *path_dat) {
         nuevo_socio.categoria[i] = toUpper(nuevo_socio.categoria[i]);
     }
 
-    printf("Fecha de Ultima Cuota Paga:\n");
+    printf("\nFecha de Ultima Cuota Paga:\n");
     ingresarFecha(&nuevo_socio.fechaUCP);
 
     nuevo_socio.estado = 'A';
@@ -278,7 +278,7 @@ void menuModificarSocio(t_indice *ind, const char *path_dat) {
     t_socio socio;
 
     printf("\n--- MODIFICAR SOCIO ---\n");
-    printf("Ingrese el DNI del socio a modificar: ");
+    printf("\nIngrese el DNI del socio a modificar: ");
     scanf("%ld", &dni_buscar);
 
     if (ind_buscar(ind, &dni_buscar, &nro_reg) == CLAVE_NO_ENCONTRADA) {
@@ -299,7 +299,7 @@ void menuModificarSocio(t_indice *ind, const char *path_dat) {
     }
 
     int opMod;
-    printf("Campos:\n1. Apellido\n2. Nombre\n3. Categoria\n4. Sexo\n5. Fecha U.C.P.\nSeleccione: ");
+    printf("\nCampos:\n1. Apellido\n2. Nombre\n3. Categoria\n4. Sexo\n5. Fecha U.C.P.\nSeleccione: ");
     scanf("%d", &opMod);
 
     switch(opMod) {
