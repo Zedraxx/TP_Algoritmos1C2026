@@ -2,6 +2,6 @@ bin/
 obj/
 *.layout
 *.depend
-.dat
-.idx
-.csv
+*.dat
+*.idx
+*.csv
