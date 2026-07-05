@@ -56,31 +56,24 @@ int main(int argc, char *argv[])
 
         switch(opcion) {
             case 'A':
-                system("cls");
                 menuAltaSocio(&ind, ARCHIVO_DATOS);
                 break;
             case 'M':
-                system("cls");
                 menuModificarSocio(&ind, ARCHIVO_DATOS);
                 break;
             case 'B':
-                system("cls");
                 menuBajaSocio(&ind, ARCHIVO_DATOS);
                 break;
             case 'L':
-                system("cls");
                 menuListarSocios(&ind, ARCHIVO_DATOS);
                 break;
             case 'C':
-                system("cls");
                 menuCompactarYReindexar(&ind, ARCHIVO_DATOS, ARCHIVO_INDICE);
                 break;
             case 'S':
-                system("cls");
                 printf("\nGuardando cambios y liberando memoria...\n");
                 break;
             default:
-                system("cls");
                 printf("\nOpcion invalida. Intente de nuevo.\n");
         }
     } while (opcion != 'S');

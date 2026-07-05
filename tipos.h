@@ -11,17 +11,6 @@ typedef struct {
     int dia, mes, anio;
 } t_fecha;
 
-typedef struct s_nodoA
-{
-    void *info;
-    size_t tamInfo;
-    struct s_nodoA *izq,
-                   *der;
-}t_nodoA;
-
-typedef t_nodoA *t_arbol;
-
-
 typedef struct {
     long dni;
     char ape[60];

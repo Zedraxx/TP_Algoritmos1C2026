@@ -1,8 +1,13 @@
 #include "indice.h"
 
-static void grabar_nodo_long(const void *info, const void *param);
+typedef struct {
+    FILE *fp;
+    size_t tam_clave;
+} t_grabar_param;
+
+static void grabar_nodo(const void *info, const void *param);
 static void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato);
-static void vaciar_arbol_indice(t_arbol *pa);
+static void liberar_clave_nodo(void *info, void *param);
 
 void ind_crear(t_indice* ind, size_t tam_clave, int (*cmp)(const void*, const void*))
 {
@@ -78,17 +83,14 @@ int ind_recorrer(const t_indice* ind, void(*accion)(const void*, const void*), v
 }
 
 
-// recibe info desglosa y escribe,es la accion q tendra el recorrer
-static void grabar_nodo_long(const void *info, const void *param)
+// recibe info desglosa y escribe, es la accion q tendra el recorrer
+static void grabar_nodo(const void *info, const void *param)
 {
-    // info es el nodo, param el puntero al arch
-    t_reg_indice *reg = (t_reg_indice *)info;
-    FILE *fp = (FILE *)param;
+    const t_reg_indice *reg = (const t_reg_indice *)info;
+    const t_grabar_param *p = (const t_grabar_param *)param;
 
-    long *dni = (long *)reg->clave;
-
-    fwrite(dni, sizeof(long), 1, fp);
-    fwrite(&reg->nro_reg, sizeof(unsigned), 1, fp);
+    fwrite(reg->clave, p->tam_clave, 1, p->fp);
+    fwrite(&reg->nro_reg, sizeof(unsigned), 1, p->fp);
 }
 
 int ind_grabar(const t_indice* ind, const char* path)
@@ -96,7 +98,11 @@ int ind_grabar(const t_indice* ind, const char* path)
     FILE *fp = fopen(path, "wb");
     if(!fp) return 0;
 
-    int resultado = ind_recorrer((t_indice*)ind, grabar_nodo_long, fp);
+    t_grabar_param parametros;
+    parametros.fp = fp;
+    parametros.tam_clave = ind->tam_clave;
+
+    int resultado = ind_recorrer(ind, grabar_nodo, &parametros);
 
     fclose(fp);
     return resultado;
@@ -151,32 +157,22 @@ int ind_cargar(t_indice* ind, const char* path)
     return 1;
 }
 
-static void vaciar_arbol_indice(t_arbol *pa)
+static void liberar_clave_nodo(void *info, void *param)
 {
-    if (!*pa) return;
-
-    // vaciamos todos los hijos primero
-    vaciar_arbol_indice(&(*pa)->izq);
-    vaciar_arbol_indice(&(*pa)->der);
-
-    // ahora q no estan los hijos, vaciamos la raiz de todos los sub arbol y del arbol gral
-    t_reg_indice *reg = (t_reg_indice *)(*pa)->info;
-
-    if (reg) {
-        if (reg->clave) {
-            free(reg->clave);
-        }
-        free(reg); //primero libero la clave luego registro
+    t_reg_indice *reg = (t_reg_indice *)info;
+    if (reg && reg->clave) {
+        free(reg->clave);
+        reg->clave = NULL;
     }
-
-    // luego liberamos el nodo del arbol y lo seteamos a null
-    free(*pa);
-    *pa = NULL;
 }
 
 void ind_vaciar(t_indice* ind)
 {
-    if (!ind || !ind->arbol) return;
+    if (!ind || !(ind->arbol)) return;
 
-    vaciar_arbol_indice(&(ind->arbol));//No pongo en 0 el tamClave y el cmp en null por si se quiere vaciar el indice y cargarlo desde otro .idx sin volver a crearlo
+    // Recorremos el árbol usando su primitiva pública para liberar las 'clave' dinámicas
+    recorrerArbolEnOrden(&(ind->arbol), liberar_clave_nodo, NULL);
+
+    // dejamos que el árbol se destruya a sí mismo con su propia primitiva.
+    eliminarArbol(&(ind->arbol));
 }

@@ -39,7 +39,7 @@ int insertarArbol(t_arbol *pa, const void *d, unsigned tam, int (*cmp)(const voi
     if (!nue)
         return SIN_MEM;
 
-    // Reservamos espacio para el dato genérico (el t_reg_indice)
+    // Reservamos espacio para el dato genï¿½rico (el t_reg_indice)
     nue->info = malloc(tam);
     if (!nue->info) {
         free(nue);
@@ -52,7 +52,7 @@ int insertarArbol(t_arbol *pa, const void *d, unsigned tam, int (*cmp)(const voi
     nue->izq = NULL;
     nue->der = NULL;
 
-    //Vinculamos al árbol
+    //Vinculamos al ï¿½rbol
     *pa = nue;
 
     return TODO_BIEN;
@@ -91,7 +91,7 @@ unsigned alturaArbol(const t_arbol *pa)
     if(!*pa)
         return 0;
 
-    return MAXIMO(alturaArbol(&(*pa)->izq), alturaArbol(&(*pa)->der)+1);
+    return MAXIMO(alturaArbol(&(*pa)->izq), alturaArbol(&(*pa)->der)) + 1;
 }
 
 t_nodoA ** mayorNodoArbol(const t_arbol * pa)

@@ -10,15 +10,15 @@
 #define MINIMO(X,Y) ((X)<(Y)?(X):(Y))
 #define MAXIMO(X,Y) ((X)>(Y)?(X):(Y))
 
-typedef struct sNodoArbol
+typedef struct s_nodoA
 {
     void *info;
-    unsigned tamInfo;
-    struct sNodoArbol *izq,
-               *der;
-} tNodoArbol;
+    size_t tamInfo;
+    struct s_nodoA *izq,
+                   *der;
+}t_nodoA;
 
-typedef tNodoArbol *tArbol;
+typedef t_nodoA *t_arbol;
 
 void crearArbol(t_arbol *pa);
 void eliminarArbol(t_arbol *pa);
