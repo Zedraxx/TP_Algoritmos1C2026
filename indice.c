@@ -9,6 +9,16 @@ static void grabar_nodo(const void *info, const void *param);
 static void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato);
 static void liberar_clave_nodo(void *info, void *param);
 
+static int (*_cmp_usuario_actual)(const void*, const void*) = NULL;
+
+static int comparar_registros_internos(const void *a, const void *b)
+{
+    const t_reg_indice *regA = (const t_reg_indice *)a;
+    const t_reg_indice *regB = (const t_reg_indice *)b;
+
+    return _cmp_usuario_actual(regA->clave, regB->clave);
+}
+
 void ind_crear(t_indice* ind, size_t tam_clave, int (*cmp)(const void*, const void*))
 {
     crearArbol(&(ind->arbol));
@@ -28,7 +38,9 @@ int ind_insertar(t_indice* ind, void *clave, unsigned nro_reg)
     memcpy(nuevo_registro.clave, clave, ind->tam_clave);
     nuevo_registro.nro_reg = nro_reg;
 
-    int resultado = insertarArbol(&(ind->arbol), &nuevo_registro, sizeof(t_reg_indice), ind->cmp);
+    _cmp_usuario_actual = ind->cmp;
+
+    int resultado = insertarArbol(&(ind->arbol), &nuevo_registro, sizeof(t_reg_indice), comparar_registros_internos);
 
     if (resultado != TODO_BIEN) {
         free(nuevo_registro.clave);
@@ -41,18 +53,19 @@ int ind_insertar(t_indice* ind, void *clave, unsigned nro_reg)
 int ind_eliminar(t_indice* ind, void *clave, unsigned *nro_reg)
 {
     t_reg_indice buscado;
-
     buscado.clave = clave;
 
-    if (!eliminarElemArbol(&(ind->arbol), &buscado, sizeof(t_reg_indice), ind->cmp)) {
-        return CLAVE_NO_ENCONTRADA; // 0 si la clave no existia en el arbol
+    _cmp_usuario_actual = ind->cmp;
+
+    if (!eliminarElemArbol(&(ind->arbol), &buscado, sizeof(t_reg_indice), comparar_registros_internos)) {
+        return CLAVE_NO_ENCONTRADA;
     }
 
     *nro_reg = buscado.nro_reg;
 
     free(buscado.clave);
 
-    return CLAVE_ENCONTRADA; //1 si la pudo eliminar
+    return CLAVE_ENCONTRADA;
 }
 
 int ind_buscar(const t_indice* ind, void *clave, unsigned *nro_reg)
@@ -60,18 +73,13 @@ int ind_buscar(const t_indice* ind, void *clave, unsigned *nro_reg)
     t_reg_indice buscado;
     buscado.clave = clave;
 
-    t_nodoA **nodo_hallado = buscarEnArbol(&(ind->arbol), &buscado, ind->cmp);
+    _cmp_usuario_actual = ind->cmp;
 
-    if (nodo_hallado == NULL) {
-        return CLAVE_NO_ENCONTRADA; //Clave no encontrada
+    if (!buscarElemArbol(&(ind->arbol), &buscado, sizeof(t_reg_indice), comparar_registros_internos)) {
+        return CLAVE_NO_ENCONTRADA;
     }
 
-    // Desreferenciamos el doble puntero (*nodo_hallado) para llegar al nodo
-    // desp agarramos su campo 'info' y lo casteamos a reg_indice
-    t_reg_indice *registro_real = (t_reg_indice *)(*nodo_hallado)->info;
-
-    *nro_reg = registro_real->nro_reg;
-
+    *nro_reg = buscado.nro_reg;
     return CLAVE_ENCONTRADA;
 }
 
@@ -79,7 +87,7 @@ int ind_recorrer(const t_indice* ind, void(*accion)(const void*, const void*), v
 {
     if (!ind || !ind->arbol) return 0;
 
-    return recorrerArbolEnOrden((t_arbol *)&ind->arbol, (void (*)(void *, void *))accion, param);//Los tuve q castear pq me daba problemas con la firma de las funciones, el enunciado pide q la firma de esta primitiva tenga const, y la de arbol q vimos en clase no, asi que para respetar la firma lo castie asi
+    return recorrerArbolEnOrden(&ind->arbol, (void (*)(void *, void *))accion, param);
 }
 
 

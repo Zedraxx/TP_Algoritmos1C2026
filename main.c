@@ -18,7 +18,7 @@ int main(void)
     char opcion_menu;
 
     // Inicializamos la estructura del índice en memoria
-    ind_crear(&ind, sizeof(long), compararDniIndice);
+    ind_crear(&ind, sizeof(long), compararDnis);
 
     do {
         printf("\n=========================================\n");
@@ -38,9 +38,9 @@ int main(void)
 
         switch (opcion_app) {
             case 1:
-                printf("\n--- PRIMERA APLICACIÓN: GENERAR ÍNDICE ---\n");
+                printf("\n--- PRIMERA APLICACION: GENERAR INDICE ---\n");
                 printf("Ingrese el path (ruta de acceso) de la carpeta del archivo socios.csv: ");
-                scanf(" %511s", path_usuario);
+                scanf(" %249s", path_usuario);
 
                 // Armamos la ruta completa combinando la carpeta ingresada con el nombre del archivo
                 snprintf(path_csv, sizeof(path_csv), "%s/%s", path_usuario, "socios.csv");
@@ -48,9 +48,8 @@ int main(void)
                 printf("Procesando archivo historico: %s...\n", path_csv);
 
                 // Procesamos y generamos socios.dat y el índice en memoria
-                if (parsearCsvABinario(path_csv) != 0) { // Asumiendo que retorna 0 si fue exitoso
+                if (parsearCsvABinario(path_csv) != 0) {
                     generarIndiceDesdeDat(ARCHIVO_DATOS, &ind);
-                    // Guardamos inmediatamente el archivo .idx como pide la consigna 1
                     ind_grabar(&ind, ARCHIVO_INDICE);
                     printf("¡Indice generado y guardado con exito en %s!\n", ARCHIVO_INDICE);
                 } else {
@@ -59,7 +58,7 @@ int main(void)
                 break;
 
             case 2:
-                printf("\n--- SEGUNDA APLICACIÓN: GESTIÓN DE SOCIOS ---\n");
+                printf("\n--- SEGUNDA APLICACION: GESTION DE SOCIOS ---\n");
 
                 // Antes de abrir el menú, intentamos cargar el índice existente para no perder datos
                 FILE* test_idx = fopen(ARCHIVO_INDICE, "rb");

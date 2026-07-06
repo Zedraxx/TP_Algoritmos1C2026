@@ -74,7 +74,7 @@ t_nodoA ** buscarEnArbol(const t_arbol * pa, const void * d,
     return (t_nodoA **)pa;
 }
 
-int recorrerArbolEnOrden(t_arbol *pa, void (*accion)(void *, void *), void* param)
+int recorrerArbolEnOrden(const t_arbol *pa, void (*accion)(void *, void *), void* param)
 {
     if(!*pa)
         return 0;
@@ -113,6 +113,7 @@ t_nodoA ** menorNodoArbol(const t_arbol * pa)
     return (t_nodoA **) pa;
 }
 
+
 int eliminarRaizArbol(t_arbol* pa)
 {
     t_nodoA **remp;
@@ -141,6 +142,15 @@ int eliminarRaizArbol(t_arbol* pa)
 
     free(elim);
 
+    return 1;
+}
+
+int buscarElemArbol(const t_arbol *p, void *d, unsigned tam,
+                             int (*cmp)(const void *, const void *))
+{
+    if(!(p = buscarEnArbol(p,d,cmp)))
+        return 0;
+    memcpy(d, (*p)->info, MINIMO(tam, (*p)->tamInfo));
     return 1;
 }
 

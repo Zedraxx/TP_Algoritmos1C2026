@@ -31,10 +31,12 @@ unsigned alturaArbol(const t_arbol *pa);
 t_nodoA ** mayorNodoArbol(const t_arbol * pa);
 t_nodoA ** menorNodoArbol(const t_arbol * pa);
 
+int buscarElemArbol(const t_arbol *p, void *d, unsigned tam,
+                             int (*cmp)(const void *, const void *));
 t_nodoA ** buscarEnArbol(const t_arbol * p, const void * d,
                                      int (*cmp)(const void*, const void *));
 
-int recorrerArbolEnOrden(t_arbol *pa, void (*accion)(void *, void *), void* param);
+int recorrerArbolEnOrden(const t_arbol *pa, void (*accion)(void *, void *), void* param);
 
 int eliminarRaizArbol(t_arbol* pa);
 int eliminarElemArbol(t_arbol *pa, void *d, unsigned tam, int (*cmp)(const void *, const void *));

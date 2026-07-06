@@ -122,25 +122,13 @@ int generarIndiceDesdeDat(const char *path_dat, t_indice *ind)
     return 1;
 }
 
-int compararDniIndice(const void *a, const void *b)
-{
-    const t_reg_indice *regA = (const t_reg_indice *)a;
-    const t_reg_indice *regB = (const t_reg_indice *)b;
-
-    const long *dniA = (const long *)regA->clave;
-    const long *dniB = (const long *)regB->clave;
+int compararDnis(const void *a, const void *b) {
+    const long *dniA = (const long *)a;
+    const long *dniB = (const long *)b;
 
     if (*dniA == *dniB) return 0;
-    if (*dniA > *dniB) return 1;    // A es mayor
-    return -1;                      // A es menor
+    return (*dniA > *dniB) ? 1 : -1;
 }
-
-void imprimirIndice(const void* a, const void* b){
-    const t_reg_indice *regA = (const t_reg_indice *)a;
-
-    printf("%ld : %u\n", *(const long*)regA->clave, regA->nro_reg);
-}
-
 
 
 
@@ -176,8 +164,8 @@ void accionListarSocio(const void *info, const void *param) {
     if (fread(&socio, sizeof(t_socio), 1, fp) == 1) {
 
         if (socio.estado != 'B') {
-            printf("DNI: %-10ld | %-15s, %-15s | Cat: %-10s | Sexo: %c | Estado: %c\n",
-                   socio.dni, socio.ape, socio.nom, socio.categoria, socio.sexo, socio.estado);
+            printf("DNI: %-10ld | %-15s, %-15s | Cat: %-10s | Sexo: %c | Estado: %c | Fecha UCP: %02d/%02d/%04d\n",
+                   socio.dni, socio.ape, socio.nom, socio.categoria, socio.sexo, socio.estado, socio.fechaUCP.dia, socio.fechaUCP.mes, socio.fechaUCP.anio);
         }
     }
 }
@@ -358,7 +346,7 @@ void menuModificarSocio(t_indice *ind, const char *path_dat) {
             break;
         }
         default:
-            printf("Opción invalida.\n");
+            printf("Opcion invalida.\n");
             fclose(fp);
             return;
     }

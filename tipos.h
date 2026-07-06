@@ -13,12 +13,12 @@ typedef struct {
 
 typedef struct {
     long dni;
-    char ape[60];
-    char nom[60];
+    char ape[61];
+    char nom[61];
     t_fecha fechaNac;
     char sexo;
     t_fecha fechaAf;
-    char categoria[10];
+    char categoria[11];
     t_fecha fechaUCP;
     char estado;
     t_fecha fechaBaja;
