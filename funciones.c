@@ -346,7 +346,7 @@ void menuModificarSocio(t_indice *ind, const char *path_dat) {
             break;
         }
         default:
-            printf("Opción invalida.\n");
+            printf("Opcion invalida.\n");
             fclose(fp);
             return;
     }

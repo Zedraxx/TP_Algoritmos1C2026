@@ -38,7 +38,7 @@ int main(void)
 
         switch (opcion_app) {
             case 1:
-                printf("\n--- PRIMERA APLICACIÓN: GENERAR ÍNDICE ---\n");
+                printf("\n--- PRIMERA APLICACION: GENERAR INDICE ---\n");
                 printf("Ingrese el path (ruta de acceso) de la carpeta del archivo socios.csv: ");
                 scanf(" %249s", path_usuario);
 
@@ -58,7 +58,7 @@ int main(void)
                 break;
 
             case 2:
-                printf("\n--- SEGUNDA APLICACIÓN: GESTIÓN DE SOCIOS ---\n");
+                printf("\n--- SEGUNDA APLICACION: GESTION DE SOCIOS ---\n");
 
                 // Antes de abrir el menú, intentamos cargar el índice existente para no perder datos
                 FILE* test_idx = fopen(ARCHIVO_INDICE, "rb");
