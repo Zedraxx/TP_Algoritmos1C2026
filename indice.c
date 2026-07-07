@@ -97,8 +97,15 @@ static void grabar_nodo(const void *info, const void *param)
     const t_reg_indice *reg = (const t_reg_indice *)info;
     const t_grabar_param *p = (const t_grabar_param *)param;
 
-    fwrite(reg->clave, p->tam_clave, 1, p->fp);
-    fwrite(&reg->nro_reg, sizeof(unsigned), 1, p->fp);
+    // Calculamos el tamaño total del registro que vamos a guardar
+    size_t tam_total = p->tam_clave + sizeof(unsigned);
+
+    char buffer[tam_total];
+
+    memcpy(buffer, reg->clave, p->tam_clave);
+    memcpy(buffer + p->tam_clave, &reg->nro_reg, sizeof(unsigned));
+
+    fwrite(buffer, tam_total, 1, p->fp);
 }
 
 int ind_grabar(const t_indice* ind, const char* path)
