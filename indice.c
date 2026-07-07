@@ -126,7 +126,7 @@ int ind_grabar(const t_indice* ind, const char* path)
 
 static void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_t tamDato)
 {
-    if (inicio > fin)
+if (inicio > fin)
         return;
 
     int medio = (inicio + fin) / 2;
@@ -134,18 +134,18 @@ static void cargar_recursivo(t_indice *ind, FILE *fp, int inicio, int fin, size_
     // Nos posicionamos en el registro del medio
     fseek(fp, (long)medio * tamDato, SEEK_SET);
 
-    // Reservamos memoria temporal para leer la clave
-    void *buffer_clave = malloc(ind->tam_clave);
+    // 1. Reservamos memoria para leer el registro COMPLETO (clave + nro_reg)
+    char *buffer_lectura = malloc(tamDato);
     unsigned nro_reg;
 
-    if (buffer_clave) {
-        fread(buffer_clave, ind->tam_clave, 1, fp);
-        fread(&nro_reg, sizeof(unsigned), 1, fp);
+    if (buffer_lectura) {
+        fread(buffer_lectura, tamDato, 1, fp);
 
-        // Insertamos en el indice lo leido
-        ind_insertar(ind, buffer_clave, nro_reg);
+        memcpy(&nro_reg, buffer_lectura + ind->tam_clave, sizeof(unsigned));
 
-        free(buffer_clave);
+        ind_insertar(ind, buffer_lectura, nro_reg);
+
+        free(buffer_lectura);
     }
 
     // Recursividad para las mitades
